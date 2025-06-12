@@ -23,11 +23,14 @@ docs = [Document(page_content=chunk["text"], metadata={"source": chunk["source"]
 
 # ✅ Embed and store in Chroma DB
 print("🚀 Embedding documents...")
-db = Chroma.from_documents(
-    documents=docs,
-    embedding_function=OpenAIEmbeddings(),
-    persist_directory="chroma"
-)
 
+embedding = OpenAIEmbeddings()
+persist_dir = "chroma"
+
+db = Chroma(
+    embedding_function=embedding,
+    persist_directory=persist_dir
+)
+db.add_documents(docs)
 db.persist()
 print("✅ Embedding complete! Chroma DB saved to /chroma")
