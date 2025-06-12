@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+langchain-community
+openai
+chromadb
+beautifulsoup4
+markdown
+tiktoken
+python-dotenv
