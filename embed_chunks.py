@@ -1,15 +1,33 @@
+import os
+import json
 from dotenv import load_dotenv
+from langchain.schema import Document
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
-import os
-from langchain.schema import Document
-import json
 
-os.environ["OPENAI_API_BASE"] = "https://ai.iitm.ac.in/proxy/v1"
+# ✅ Load environment variables from .env
 load_dotenv()
-with open("chunks.json") as f:
+
+# ✅ Set OpenAI API credentials for LangChain
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+
+# ✅ Load chunked data
+print("📂 Loading chunks.json...")
+with open("chunks.json", encoding="utf-8") as f:
     chunks = json.load(f)
 
-docs = [Document(page_content=c["text"], metadata={"source": c["source"]}) for c in chunks]
-db = Chroma.from_documents(docs, OpenAIEmbeddings(), persist_directory="chroma")
+# ✅ Convert to LangChain Documents
+print(f"📄 Preparing {len(chunks)} chunks...")
+docs = [Document(page_content=chunk["text"], metadata={"source": chunk["source"]}) for chunk in chunks]
+
+# ✅ Embed and store in Chroma DB
+print("🚀 Embedding documents...")
+db = Chroma.from_documents(
+    documents=docs,
+    embedding_function=OpenAIEmbeddings(),
+    persist_directory="chroma"
+)
+
 db.persist()
+print("✅ Embedding complete! Chroma DB saved to /chroma")
