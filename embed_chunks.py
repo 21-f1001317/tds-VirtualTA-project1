@@ -3,7 +3,8 @@ import json
 from dotenv import load_dotenv
 from langchain.schema import Document
 from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+# from langchain_openai import OpenAIEmbeddings
+from dummy_embedder import DummyEmbeddings
 
 # ✅ Load environment variables from .env
 load_dotenv()
@@ -24,7 +25,9 @@ docs = [Document(page_content=chunk["text"], metadata={"source": chunk["source"]
 # ✅ Embed and store in Chroma DB
 print("🚀 Embedding documents...")
 
-embedding = OpenAIEmbeddings()
+# embedding = OpenAIEmbeddings()
+embedding = DummyEmbeddings()
+
 persist_dir = "chroma"
 
 db = Chroma(
